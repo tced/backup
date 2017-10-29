@@ -75,6 +75,7 @@ allocproc(void)
 {
   struct proc *p;
   char *sp;
+  int counter = 2; 
 
   acquire(&ptable.lock);
 
@@ -87,6 +88,7 @@ allocproc(void)
 
 found:
   p->state = EMBRYO;
+  p->p_val = counter; 
   p->pid = nextpid++;
 
   release(&ptable.lock);
@@ -357,8 +359,30 @@ waitpid(int curr_pid, int *status, int options)
     }
 
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
-}                                                                   
-//PAGEBREAK: 42
+}
+                                                                 
+void dec_pval(struct proc *p) {
+ if ((p->state != ZOMBIE || p->state != UNUSED) && p->p_val == 0) {
+   p->p_val = 63;
+ }
+
+ else
+  --p->p_val;
+}
+
+struct proc *change_priority(struct proc *p) {
+  struct proc *curr = ptable.proc;
+  int max = curr->p_val;
+
+  for (struct proc *p = ptable.proc + 1; p < &ptable.proc[NPROC]; ++p) {
+     if (p->p_val > max) {
+       max = p->p_val;
+       curr = p;
+     }
+  }
+    return curr;
+}
+
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:
@@ -373,8 +397,6 @@ scheduler(void)
   struct cpu *c = mycpu();
   c->proc = 0;
 
-  //ADDED: initalize each incoming process's priority value to 63 
-  int counter = 63; 
  
   for(;;){
     // Enable interrupts on this processor.
@@ -386,16 +408,16 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
 
-	
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      c->proc = p;
-      p->p_val = counter; 
+      //c->proc = p;
+
+      c->proc = change_priority(p);
+      dec_pval(p);  
       switchuvm(p);
       p->state = RUNNING;
-      --p->p_val;
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
@@ -410,7 +432,6 @@ scheduler(void)
   }
 }
 
-void change_priority() {}
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
 // intena because intena is a property of this
