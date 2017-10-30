@@ -1,7 +1,6 @@
 #include "types.h"
 #include "user.h"
 
-int ret_pid; 
 int main(int argc, char *argv[])
 {
 	int exitWait(void);
@@ -23,6 +22,7 @@ int main(int argc, char *argv[])
 	 exit(0);
  }
   
+int ret_pid; 
 int exitWait(void) {
 	int pid, exit_status;
        	int i;
@@ -57,7 +57,7 @@ int exitWait(void) {
 
 int waitPid(void){
 	
-  int exit_status;
+  int ret_pid, exit_status;
   int i;
   int pid_a[5]={0, 0, 0, 0, 0};
  // use this part to test wait(int pid, int* status, int options)
@@ -96,7 +96,7 @@ int waitPid(void){
       
       return 0;
   }
-      
+ /*      
      int PScheduler(void){
 		 
     // use this part to test the priority scheduler. Assuming that the priorities range between range between 0 to 63
@@ -115,7 +115,7 @@ int waitPid(void){
 	if (pid > 0 ) {
 		continue;}
 	else if ( pid == 0) {
-		printf(1, "\n Hello! this is child# %d and I will change my priority to %d \n",getpid(),60-20*i);
+//		printf(1, "\n Hello! this is child# %d and I will change my priority to %d \n",getpid(),60-20*i);
 		setpriority(60-20*i);	
 		for (j=0;j<50000;j++) {
 			for(k=0;k<10000;k++) {
@@ -139,4 +139,4 @@ int waitPid(void){
 			
 	return 0;}
 
- 
+*/ 
