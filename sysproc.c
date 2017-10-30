@@ -31,14 +31,14 @@ sys_wait(int *status)
 }
 
 int 
-sys_waitpid(int curr_pid, int *status, int options) 
+sys_waitpid(void) 
 {
-  int id, op; 
-  char *s = (char*) *status; 
+  int id, op;
+  int *status;  
   argint(0, &id); 
-  argptr(1, &s, sizeof(int)); 
+  argptr(1, (char**) &status, sizeof(int)); 
   argint(2, &op); 
-  return waitpid(curr_pid, status, options);
+  return waitpid(id, status, op);
 }
 
 int
