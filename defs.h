@@ -118,6 +118,7 @@ void            setproc(struct proc*);
 void            sleep(void*, struct spinlock*);
 void            userinit(void);
 int             wait(int *status); //CHANGED FROM VOID TO INT
+int		waitpid(int, int*, int); //added for waitpid 
 void            wakeup(void*);
 void            yield(void);
 
