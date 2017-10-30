@@ -328,11 +328,11 @@ waitpid(int curr_pid, int *status, int options)
     // Scan through table looking for exited children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->pid != curr_pid) 
+      if(p->pid != curr_pid && p->parent != curproc) 
 	continue; 
-      if(p->parent != curproc)
-        continue;
-      havekids = 1;
+      //if(p->parent != curproc)
+        //continue;
+        havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
         pid2 = p->pid;
