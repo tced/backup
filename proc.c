@@ -382,9 +382,8 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
+  int p_val; //declared variable to place highest priority value  
 
-  //ADDED: initalize each incoming process's priority value to 63 
-  int counter = 63; 
  
   for(;;){
     // Enable interrupts on this processor.
@@ -392,20 +391,34 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    //declare p_val as 63 since that's the lowest priority  
+    p_val = 63; 
+    //made for loop to find priority value     
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if(p->state != RUNNABLE) 
+        continue; 
+      //if p->p_val is less tham 63, set it to variable 
+      if (p_val > p->p_val) 
+        p_val = p->p_val; 
+    }
+
+    //original for loop 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
-
+      //if p->p_val is greater than p_val, then continue thro		ugh page table 
+      if(p->p_val > p_val) 
+        continue; 
+      //if p->p_val is less than p_val, choos this process 
+      if(p->p_val < p_val) 
+        break; 
 	
-
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
       c->proc = p;
-      p->p_val = counter; 
       switchuvm(p);
       p->state = RUNNING;
-      --p->p_val;
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
