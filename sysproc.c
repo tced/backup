@@ -23,10 +23,10 @@ sys_exit(int status)
 }
 
 int
-sys_wait(int *status) 
+sys_wait(void) 
 { 
-  char *mypointer = (char*) *status; 
-  argptr(0, &mypointer, sizeof(int)); 
+  int *status; 
+  argptr(0, (char**) &status, sizeof(int)); 
   return wait(status); 
 }
 
