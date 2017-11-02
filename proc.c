@@ -357,6 +357,13 @@ waitpid(int curr_pid, int *status, int options)
     }
 
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+}
+//added setpriority function 
+int setpriority(int new_pval) {
+  struct proc* curproc = myproc(); 
+  curproc->p_val = new_pval; 
+  cprintf("my curproc p_val is %d\n", curproc->p_val); 
+  return curproc->p_val; 
 }                                                                   
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
