@@ -41,6 +41,14 @@ sys_waitpid(void)
   return waitpid(id, status, op);
 }
 
+int 
+sys_setpriority(void) 
+{
+  int new_priority; 
+  argint(0, &new_priority); 
+  return setpriority(new_priority); 
+}
+
 int
 sys_kill(void)
 {
