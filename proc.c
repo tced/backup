@@ -399,8 +399,8 @@ scheduler(void)
         continue; 
       //if p->p_val is less tham 63, set it to variable 
       if (p_val > p->p_val) 
-        p_val = p->p_val; 
-    }
+        p_val = p->p_val;
+       }
 
     //original for loop 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -408,10 +408,13 @@ scheduler(void)
         continue;
       //if p->p_val is greater than p_val, then continue thro		ugh page table 
       if(p->p_val > p_val) 
-        continue; 
+        continue;
+      printf(1, "this is the priority that was chosen %d");
+     // else 
+ 
       //if p->p_val is less than p_val, choos this process 
-      if(p->p_val < p_val) 
-        break; 
+      //if(p->p_val < p_val) 
+        //break; 
 	
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
@@ -433,7 +436,6 @@ scheduler(void)
   }
 }
 
-void change_priority() {}
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
 // intena because intena is a property of this
